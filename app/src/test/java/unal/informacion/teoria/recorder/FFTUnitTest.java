@@ -19,8 +19,8 @@ public class FFTUnitTest {
 
         FFT output = FFT.ditfft2(input);
 
-        assertArrayEquals(outputReal, output.real, 0.00001);
-        assertArrayEquals(outputImg, output.img, 0.00001);
+        assertArrayEquals(outputReal, output.real, 0.003);
+        assertArrayEquals(outputImg, output.img, 0.003);
     }
 
     @Test
@@ -32,8 +32,8 @@ public class FFTUnitTest {
 
         FFT output = FFT.ditfft2(input);
 
-        assertArrayEquals(outputReal, output.real, 0.00001);
-        assertArrayEquals(outputImg, output.img, 0.00001);
+        assertArrayEquals(outputReal, output.real, 0.003);
+        assertArrayEquals(outputImg, output.img, 0.003);
     }
 
     @Test
@@ -47,7 +47,23 @@ public class FFTUnitTest {
 
         FFT output = FFT.ditfft2(input);
 
-        assertArrayEquals(outputReal, output.real, 0.00001);
-        assertArrayEquals(outputImg, output.img, 0.00001);
+        assertArrayEquals(outputReal, output.real, 0.003);
+        assertArrayEquals(outputImg, output.img, 0.003);
+    }
+
+    @Test
+    public void fft_test4() throws Exception {
+
+        double [] input = new double[]{0.001, -0.001, 0.003, -0.001, 0.002, -0.003,
+                0.001, -0.002};
+        double [] outputImg = new double[]{0, -0.0041, 0.0010, -0.0001, 0, 0.0001,
+                -0.0010, 0.0041};
+        double [] outputReal = new double[]{0, -0.0003, -0.0010, -0.0017, 0.0140,
+                -0.0017, -0.0010, -0.003};
+
+        FFT output = FFT.ditfft2(input);
+
+        assertArrayEquals(outputReal, output.real, 0.003);
+        assertArrayEquals(outputImg, output.img, 0.003);
     }
 }
