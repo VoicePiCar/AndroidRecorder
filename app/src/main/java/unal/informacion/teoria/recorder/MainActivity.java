@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -19,10 +20,12 @@ public class MainActivity extends AppCompatActivity {
     private static String mFileName = null;
     private MediaRecorder mRecorder = null;
     private MediaPlayer mPlayer = null;
+    private boolean recording = true;
+    private boolean playing = true;
 
     /**
      * Start or stop the recording
-     * @param start: true if is recording, false otherwise
+     * @param start: true if will record, false otherwise
      */
     private void onRecord(boolean start) {
         if (start) {
@@ -34,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Start or stop the reproduction
-     * @param start: true if is playing, false otherwise
+     * @param start: true if will play, false otherwise
      */
     private void onPlay(boolean start) {
         if (start) {
@@ -94,48 +97,48 @@ public class MainActivity extends AppCompatActivity {
         mRecorder = null;
     }
 
-    class RecordButton extends Button {
-        boolean mStartRecording = true;
-
-        OnClickListener clicker = new OnClickListener() {
-            public void onClick(View v) {
-                onRecord(mStartRecording);
-                if (mStartRecording) {
-                    setText(R.string.stop);
-                } else {
-                    setText(R.string.start);
-                }
-                mStartRecording = !mStartRecording;
+    /**
+     * Activate recording button
+     * @param view: Android view
+     */
+    public void recordClick(View view) {
+        if (playing) {
+            onRecord(recording);
+            Button button = (Button) findViewById(R.id.rec);
+            if (button != null) {
+                if (recording)
+                    button.setText(R.string.stop_rec);
+                else
+                    button.setText(R.string.start_rec);
+                recording = !recording;
             }
-        };
-
-        public RecordButton(Context ctx) {
-            super(ctx);
-            setText(R.string.start);
-            setOnClickListener(clicker);
+            else
+                Toast.makeText(getApplicationContext(), "Error: not existing button", Toast.LENGTH_SHORT).show();
         }
+        else
+            Toast.makeText(getApplicationContext(), R.string.wait_play, Toast.LENGTH_SHORT).show();
     }
 
-    class PlayButton extends Button {
-        boolean mStartPlaying = true;
-
-        OnClickListener clicker = new OnClickListener() {
-            public void onClick(View v) {
-                onPlay(mStartPlaying);
-                if (mStartPlaying) {
-                    setText(R.string.stop);
-                } else {
-                    setText(R.string.start);
-                }
-                mStartPlaying = !mStartPlaying;
+    /**
+     * Activate reproducer button
+     * @param view: Android view
+     */
+    public void playClick(View view) {
+        if (recording) {
+            onRecord(playing);
+            Button button = (Button) findViewById(R.id.player);
+            if (button != null) {
+                if (playing)
+                    button.setText(R.string.stop_play);
+                else
+                    button.setText(R.string.start_play);
+                playing = !playing;
             }
-        };
-
-        public PlayButton(Context ctx) {
-            super(ctx);
-            setText(R.string.start);
-            setOnClickListener(clicker);
+            else
+                Toast.makeText(getApplicationContext(), "Error: not existing button", Toast.LENGTH_SHORT).show();
         }
+        else
+            Toast.makeText(getApplicationContext(), R.string.wait_rec, Toast.LENGTH_SHORT).show();
     }
 
     public MainActivity() {
@@ -146,12 +149,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Button start = (Button) findViewById(R.id.start);
-        Button stop = (Button) findViewById(R.id.stop);
-
-        RecordButton mRecordButton = new RecordButton(this);
-        PlayButton mPlayButton = new PlayButton(this);
 
         setContentView(R.layout.activity_main);
     }
