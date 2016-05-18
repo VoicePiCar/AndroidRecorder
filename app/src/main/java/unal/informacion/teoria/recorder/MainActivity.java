@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Start or stop the recording
+     *
      * @param start: true if will record, false otherwise
      */
     private void onRecord(boolean start) {
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Start or stop the reproduction
+     *
      * @param start: true if will play, false otherwise
      */
     private void onPlay(boolean start) {
@@ -55,6 +57,14 @@ public class MainActivity extends AppCompatActivity {
         try {
             mPlayer.setDataSource(mFileName);
             mPlayer.prepare();
+            mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    playClick(getWindow().getDecorView().getRootView());
+                }
+            });
+
             mPlayer.start();
         } catch (IOException e) {
             Log.e(LOG_TAG, "prepare() failed");
@@ -99,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Activate recording button
+     *
      * @param view: Android view
      */
     public void recordClick(View view) {
@@ -111,21 +122,20 @@ public class MainActivity extends AppCompatActivity {
                 else
                     button.setText(R.string.start_rec);
                 recording = !recording;
-            }
-            else
+            } else
                 Toast.makeText(getApplicationContext(), "Error: not existing button", Toast.LENGTH_SHORT).show();
-        }
-        else
+        } else
             Toast.makeText(getApplicationContext(), R.string.wait_play, Toast.LENGTH_SHORT).show();
     }
 
     /**
      * Activate reproducer button
+     *
      * @param view: Android view
      */
     public void playClick(View view) {
         if (recording) {
-            onRecord(playing);
+            onPlay(playing);
             Button button = (Button) findViewById(R.id.player);
             if (button != null) {
                 if (playing)
@@ -133,11 +143,9 @@ public class MainActivity extends AppCompatActivity {
                 else
                     button.setText(R.string.start_play);
                 playing = !playing;
-            }
-            else
+            } else
                 Toast.makeText(getApplicationContext(), "Error: not existing button", Toast.LENGTH_SHORT).show();
-        }
-        else
+        } else
             Toast.makeText(getApplicationContext(), R.string.wait_rec, Toast.LENGTH_SHORT).show();
     }
 
