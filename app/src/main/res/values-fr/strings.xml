@@ -4,4 +4,6 @@
     <string name="instructions">Instructions</string>
     <string name="start">Commencer l\'enregistrement</string>
     <string name="stop">Arrêter l\'enregistrement</string>
+    <string name="robotIP">Définir IP du robot</string>
+    <string name="testConnection">Tester la connexion</string>
 </resources>
