@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.Toast;
 import android.view.View;
+
 import io.socket.client.Socket;
 import io.socket.client.IO;
 import io.socket.emitter.Emitter;
@@ -15,6 +16,7 @@ import java.net.URISyntaxException;
 public class MainActivity extends AppCompatActivity {
 
     private Socket socket;
+    private String serverIP;
 
     /**
      * Activate test connection button
@@ -24,32 +26,76 @@ public class MainActivity extends AppCompatActivity {
     public void testConnection(View view) {
 
         EditText input = (EditText) findViewById(R.id.inputRobotIP);
+        if (!input.getText().toString().equals(serverIP)) {
+            serverIP = input.getText().toString().trim();
+            newConnection();
+        }
+
+        if (socket.connected()) {
+            Toast.makeText(getApplicationContext(), R.string.connected,
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            socket.connect();
+        }
+    }
+
+    /**
+     * Send command to server
+     *
+     * @param command: String
+     */
+    public void sendCommand(String command) {
+
+        if (serverIP == null || !socket.connected()) {
+            Toast.makeText(getApplicationContext(), R.string.disconnected,
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (socket.connected()) {
+            socket.emit("command", command);
+        }
+    }
+
+    /**
+     * Start a new SocketIO connection
+     */
+    public void newConnection() {
 
         try {
-            socket = IO.socket("http://" + input.getText()+":81");
+            socket = IO.socket("http://" + serverIP + ":81");
         } catch (URISyntaxException e) {
-            Toast.makeText(getApplicationContext(), "URI error", Toast.LENGTH_SHORT).show();
-			e.printStackTrace();
+            e.printStackTrace();
         }
-		
-		socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
 
-			@Override
-			public void call(Object... args) {
-				 Toast.makeText(getApplicationContext(), "Correct connection", Toast.LENGTH_SHORT).show();
-			}
+        socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
 
-		}).on(Socket.EVENT_CONNECT_ERROR , new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                MainActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), R.string.connected,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }).on(Socket.EVENT_CONNECT_ERROR, new Emitter.Listener() {
 
-			@Override
-			public void call(Object... args) {
-				Toast.makeText(getApplicationContext(), "Sorry, we're unable to connect to the robot", Toast.LENGTH_SHORT).show();
-			}
-
-		});
-		
-		socket.connect();
+            @Override
+            public void call(Object... args) {
+                socket.disconnect();
+                MainActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), R.string.connectionError,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

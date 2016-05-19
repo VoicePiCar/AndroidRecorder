@@ -6,4 +6,7 @@
     <string name="stop">Parar grabación</string>
     <string name="robotIP">Define la IP de conexión al robot</string>
     <string name="testConnection">Probar conexión</string>
+    <string name="connectionError">Lo sentimos, no fue posible establecer la conexión con el robot</string>
+    <string name="connected">Conexión exitosa</string>
+    <string name="disconnected">Prueba primero la conexión</string>
 </resources>
