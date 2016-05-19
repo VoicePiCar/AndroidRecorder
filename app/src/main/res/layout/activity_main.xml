@@ -31,18 +31,20 @@
         <Button
             android:layout_width="0px"
             android:layout_height="wrap_content"
-            android:text="@string/start"
+            android:text="@string/start_play"
             android:layout_weight="2"
-            android:id="@+id/start"
-            style="?android:attr/buttonBarButtonStyle"/>
+            android:id="@+id/player"
+            style="?android:attr/buttonBarButtonStyle"
+            android:onClick="playClick"/>
 
         <Button
             android:layout_width="0px"
             android:layout_height="wrap_content"
-            android:text="@string/stop"
+            android:text="@string/start_rec"
             android:layout_weight="2"
-            android:id="@+id/stop"
-            style="?android:attr/buttonBarButtonStyle"/>
+            android:id="@+id/rec"
+            style="?android:attr/buttonBarButtonStyle"
+            android:onClick="recordClick"/>
 
     </LinearLayout>
 
