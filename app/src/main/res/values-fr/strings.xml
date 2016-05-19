@@ -8,4 +8,9 @@
     <string name="stop_play">Arrêter la reproduction</string>
     <string name="wait_play">Attendez jusqu\'à ce que la reproduction</string>
     <string name="wait_rec">Attendez jusqu\'à ce que l\'enregistrement</string>
+    <string name="robotIP">Définir IP du robot</string>
+    <string name="testConnection">Tester la connexion</string>
+    <string name="connectionError">Désolé, nous ne pouvons pas se connecter au robot</string>
+    <string name="connected">Connexion réussie</string>
+    <string name="disconnected">Tout d\'abord tester votre connexion</string>
 </resources>

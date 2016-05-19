@@ -7,4 +7,9 @@
     <string name="start_play">Start playing</string>
     <string name="stop_play">Stop playing</string>
     <string name="wait_play">Wait until finish playing</string>
+    <string name="robotIP">Set the robot\'s IP</string>
+    <string name="testConnection">Test connection</string>
+    <string name="connectionError">Sorry, we\'re unable to connect to the robot</string>
+    <string name="connected">Connection successful</string>
+    <string name="disconnected">First test your connection</string>
 </resources>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Espere a que termine la grabación</string>
+    <string name="app_name">Recorder</string>
     <string name="instructions">Instrucciones</string>
     <string name="start_rec">Empezar grabación</string>
     <string name="stop_rec">Parar grabación</string>
@@ -8,4 +8,9 @@
     <string name="stop_play">Parar la reproducción</string>
     <string name="wait_play">Espere a que termine la reproducción</string>
     <string name="wait_rec">Espere a que termine la grabación</string>
+    <string name="robotIP">Define la IP de conexión al robot</string>
+    <string name="testConnection">Probar conexión</string>
+    <string name="connectionError">Lo sentimos, no fue posible establecer la conexión con el robot</string>
+    <string name="connected">Conexión exitosa</string>
+    <string name="disconnected">Prueba primero la conexión</string>
 </resources>
