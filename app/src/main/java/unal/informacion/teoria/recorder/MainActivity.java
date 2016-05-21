@@ -9,14 +9,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import android.widget.EditText;
 import io.socket.client.Socket;
 import io.socket.client.IO;
 import io.socket.emitter.Emitter;
 
-
 import java.net.URISyntaxException;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,11 +30,29 @@ public class MainActivity extends AppCompatActivity {
     private MediaPlayer mPlayer = null;
     private boolean recording = true;
     private boolean playing = true;
+
     // connection variables
     private Socket socket;
     private String serverIP;
 
-
+    /**
+     * Cast an audio file to a byte array
+     *
+     * @return an empty array if fails and the audio byte array otherwise
+     */
+    private byte[] audioToArray() {
+        try {
+            FileInputStream inputStream = new FileInputStream(mFileName);
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            while (inputStream.available() > 0) {
+                outputStream.write(inputStream.read());
+            }
+            return outputStream.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new byte[0];
+    }
 
     /**
      * Start or stop the recording
@@ -115,6 +136,8 @@ public class MainActivity extends AppCompatActivity {
         mRecorder.stop();
         mRecorder.release();
         mRecorder = null;
+        byte[] bytes = audioToArray();
+        System.out.println(Arrays.toString(bytes));
     }
 
     /**
@@ -167,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
     public void testConnection(View view) {
 
         EditText input = (EditText) findViewById(R.id.inputRobotIP);
+        assert input != null;
         if (!input.getText().toString().equals(serverIP)) {
             serverIP = input.getText().toString().trim();
             newConnection();
