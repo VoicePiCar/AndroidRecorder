@@ -32,9 +32,9 @@ public class FFT {
         return ditfft2(fft);
     }
 
-    /*
-    Implementation of Cooley-Tukey FFT algorithm using radix-2
-    decimation-in-time
+    /**
+     * Implementation of Cooley-Tukey FFT algorithm using radix-2
+     * decimation-in-time
      */
     public static FFT ditfft2(FFT fft) {
 
@@ -79,5 +79,19 @@ public class FFT {
         }
 
         return fftFull;
+    }
+
+    /**
+     * Calculate magnitude of FFT
+     * @param fft: FFT
+     * @return an array representing the amplitude of the associated frequency component.
+     */
+    public double[] magnitude(FFT fft) {
+
+        double[] fftMag = new double[fft.real.length];
+        for (int i = 0; i < fft.real.length; i++) {
+            fftMag[i] = Math.pow(fft.real[i], 2) + Math.pow(fft.img[i], 2);
+        }
+        return fftMag;
     }
 }
