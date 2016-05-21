@@ -14,4 +14,5 @@
     <string name="connected">Connexion réussie</string>
     <string name="disconnected">Tout d\'abord tester votre connexion</string>
     <string name="ip">192.168.1.5</string>
+    <string name="invalid_ip">Numéro IP pas valide</string>
 </resources>

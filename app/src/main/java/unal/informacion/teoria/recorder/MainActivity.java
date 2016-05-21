@@ -6,6 +6,7 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -191,17 +192,21 @@ public class MainActivity extends AppCompatActivity {
 
         EditText input = (EditText) findViewById(R.id.inputRobotIP);
         assert input != null;
-        if (!input.getText().toString().equals(serverIP)) {
-            serverIP = input.getText().toString().trim();
-            newConnection();
-        }
+        if (Patterns.IP_ADDRESS.matcher(input.getText()).matches()) {
+            if (!input.getText().toString().equals(serverIP)) {
+                serverIP = input.getText().toString().trim();
+                newConnection();
+            }
 
-        if (socket.connected()) {
-            Toast.makeText(getApplicationContext(), R.string.connected,
-                    Toast.LENGTH_SHORT).show();
-        } else {
-            socket.connect();
+            if (socket.connected()) {
+                Toast.makeText(getApplicationContext(), R.string.connected,
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                socket.connect();
+            }
         }
+        else
+            Toast.makeText(getApplicationContext(), R.string.invalid_ip, Toast.LENGTH_SHORT).show();
     }
 
     /**
