@@ -1,6 +1,5 @@
 package unal.informacion.teoria.recorder;
 
-import android.content.Context;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Environment;
