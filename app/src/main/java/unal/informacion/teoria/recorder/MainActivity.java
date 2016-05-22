@@ -24,7 +24,6 @@ import io.socket.emitter.Emitter;
 
 public class MainActivity extends AppCompatActivity {
 
-
     private static final String LOG_TAG = "AudioRecordTest";
 
     // options for Audiorecorder and Audiotrack
@@ -99,6 +98,19 @@ public class MainActivity extends AppCompatActivity {
         if (audioOutput.getState() == AudioTrack.STATE_INITIALIZED) {
 
             if (audioBuffer != null) {
+                audioOutput.setNotificationMarkerPosition(audioBuffer.size());
+                audioOutput.setPlaybackPositionUpdateListener(new AudioTrack.OnPlaybackPositionUpdateListener() {
+                    @Override
+                    public void onMarkerReached(AudioTrack track) {
+                        Button button = (Button) findViewById(R.id.player);
+                        assert button != null;
+                        button.setText(R.string.start_play);
+                        playing = !playing;
+                    }
+
+                    @Override
+                    public void onPeriodicNotification(AudioTrack track) {}
+                });
                 audioOutput.play();
 
                 short[] audioData = new short[audioBuffer.size()];
@@ -108,9 +120,6 @@ public class MainActivity extends AppCompatActivity {
 
                 audioOutput.write(audioData, 0, audioData.length);
             }
-
-            // TODO when the recording stops playing change the state of the button
-
         } else {
             Log.e(LOG_TAG, "audioTrack init failed");
         }
