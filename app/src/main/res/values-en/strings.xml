@@ -13,4 +13,6 @@
     <string name="connectionError">Sorry, we\'re unable to connect to the robot</string>
     <string name="connected">Connection successful</string>
     <string name="disconnected">First test your connection</string>
+    <string name="ip">192.168.1.5</string>
+    <string name="invalid_ip">IP number not valid</string>
 </resources>
