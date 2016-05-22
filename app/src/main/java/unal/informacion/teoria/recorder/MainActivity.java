@@ -1,59 +1,48 @@
 package unal.informacion.teoria.recorder;
 
-import android.media.MediaPlayer;
-import android.media.MediaRecorder;
-import android.os.Environment;
-import android.support.v7.app.AppCompatActivity;
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioRecord;
+import android.media.AudioTrack;
+import android.media.MediaRecorder.AudioSource;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import android.widget.EditText;
-import io.socket.client.Socket;
-import io.socket.client.IO;
-import io.socket.emitter.Emitter;
-
 import java.net.URISyntaxException;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
+
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
 
 public class MainActivity extends AppCompatActivity {
 
-    // recorder variable instantiations
+
     private static final String LOG_TAG = "AudioRecordTest";
-    private static String mFileName = null;
-    private MediaRecorder mRecorder = null;
-    private MediaPlayer mPlayer = null;
+
+    // options for Audiorecorder and Audiotrack
+    private int format = AudioFormat.ENCODING_PCM_16BIT;
+    private int sampleSize = 44100;
+
+    // recorder variable instantiations
+    private AudioRecord audioInput = null;
+    private AudioTrack audioOutput = null;
     private boolean recording = true;
     private boolean playing = true;
+
+    // Audio buffer
+    private List<Short> audioBuffer;
 
     // connection variables
     private Socket socket;
     private String serverIP;
-
-    /**
-     * Cast an audio file to a byte array
-     *
-     * @return an empty array if fails and the audio byte array otherwise
-     */
-    private byte[] audioToArray() {
-        try {
-            FileInputStream inputStream = new FileInputStream(mFileName);
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            while (inputStream.available() > 0) {
-                outputStream.write(inputStream.read());
-            }
-            return outputStream.toByteArray();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return new byte[0];
-    }
 
     /**
      * Start or stop the recording
@@ -62,7 +51,15 @@ public class MainActivity extends AppCompatActivity {
      */
     private void onRecord(boolean start) {
         if (start) {
-            startRecording();
+            Thread recordThread = new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    startRecording();
+                }
+            });
+
+            recordThread.start();
         } else {
             stopRecording();
         }
@@ -75,7 +72,15 @@ public class MainActivity extends AppCompatActivity {
      */
     private void onPlay(boolean start) {
         if (start) {
-            startPlaying();
+            Thread playThread = new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    startPlaying();
+                }
+            });
+
+            playThread.start();
         } else {
             stopPlaying();
         }
@@ -85,21 +90,29 @@ public class MainActivity extends AppCompatActivity {
      * Start playing the recording
      */
     private void startPlaying() {
-        mPlayer = new MediaPlayer();
-        try {
-            mPlayer.setDataSource(mFileName);
-            mPlayer.prepare();
-            mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    playClick(getWindow().getDecorView().getRootView());
+        int channel_config = AudioFormat.CHANNEL_OUT_MONO;
+        int bufferSize = AudioTrack.getMinBufferSize(sampleSize, channel_config, format);
+        audioOutput = new AudioTrack(AudioManager.STREAM_MUSIC, sampleSize, channel_config,
+                format, bufferSize, AudioTrack.MODE_STREAM);
+
+        if (audioOutput.getState() == AudioTrack.STATE_INITIALIZED) {
+
+            if (audioBuffer != null) {
+                audioOutput.play();
+
+                short[] audioData = new short[audioBuffer.size()];
+                for (int i = 0; i < audioData.length; i++) {
+                    audioData[i] = audioBuffer.get(i);
                 }
-            });
 
-            mPlayer.start();
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "prepare() failed");
+                audioOutput.write(audioData, 0, audioData.length);
+            }
+
+            // TODO when the recording stops playing change the state of the button
+
+        } else {
+            Log.e(LOG_TAG, "audioTrack init failed");
         }
     }
 
@@ -107,38 +120,49 @@ public class MainActivity extends AppCompatActivity {
      * Stop playing the recording
      */
     private void stopPlaying() {
-        mPlayer.release();
-        mPlayer = null;
+        if (audioOutput.getState() == AudioTrack.STATE_INITIALIZED) {
+            audioOutput.stop();
+        }
+        audioOutput.release();
+        audioOutput = null;
     }
 
     /**
      * Start recording
      */
     private void startRecording() {
-        mRecorder = new MediaRecorder();
-        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        mRecorder.setOutputFile(mFileName);
-        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 
-        try {
-            mRecorder.prepare();
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "prepare() failed");
+        int channel_config = AudioFormat.CHANNEL_IN_MONO;
+        int bufferSize = AudioRecord.getMinBufferSize(sampleSize, channel_config, format);
+        audioInput = new AudioRecord(AudioSource.VOICE_RECOGNITION, sampleSize, channel_config, format, bufferSize);
+
+        if (audioInput.getState() == AudioRecord.STATE_INITIALIZED) {
+
+            audioInput.startRecording();
+            short[] audioInBuffer = new short[bufferSize];
+            audioBuffer = new ArrayList<>();
+            while (!recording) {
+                int numShorts = audioInput.read(audioInBuffer, 0, bufferSize);
+
+                for (int i = 0; i < numShorts; i++) {
+                    audioBuffer.add(audioInBuffer[i]);
+                }
+            }
+        } else {
+            Log.e(LOG_TAG, "audioRecord init failed");
         }
-
-        mRecorder.start();
     }
 
     /**
      * Stop recording
      */
     private void stopRecording() {
-        mRecorder.stop();
-        mRecorder.release();
-        mRecorder = null;
-        byte[] bytes = audioToArray();
-        System.out.println(Arrays.toString(bytes));
+        if (audioInput.getState() == AudioRecord.STATE_INITIALIZED) {
+            audioInput.stop();
+        }
+
+        audioInput.release();
+        audioInput = null;
     }
 
     /**
@@ -204,8 +228,7 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 socket.connect();
             }
-        }
-        else
+        } else
             Toast.makeText(getApplicationContext(), R.string.invalid_ip, Toast.LENGTH_SHORT).show();
     }
 
@@ -266,11 +289,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public MainActivity() {
-        mFileName = Environment.getExternalStorageDirectory().getAbsolutePath();
-        mFileName += "/audiorecordtest.3gp";
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -280,14 +298,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-        if (mRecorder != null) {
-            mRecorder.release();
-            mRecorder = null;
+        if (audioInput != null) {
+            audioInput.release();
+            audioInput = null;
         }
 
-        if (mPlayer != null) {
-            mPlayer.release();
-            mPlayer = null;
+        if (audioOutput != null) {
+            audioOutput.release();
+            audioOutput = null;
         }
     }
 }
