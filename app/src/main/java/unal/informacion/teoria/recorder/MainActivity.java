@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     // options for Audiorecorder and Audiotrack
     private int format = AudioFormat.ENCODING_PCM_16BIT;
-    private int sampleSize = 44100;
+    private int sampleSize = 8000;
 
     // recorder variable instantiations
     private AudioRecord audioInput = null;
@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
             audioInput.startRecording();
             short[] audioInBuffer = new short[bufferSize];
             audioBuffer = new ArrayList<>();
-            while (!recording) {
+            while (!recording && audioInput != null) {
                 int numShorts = audioInput.read(audioInBuffer, 0, bufferSize);
 
                 for (int i = 0; i < numShorts; i++) {

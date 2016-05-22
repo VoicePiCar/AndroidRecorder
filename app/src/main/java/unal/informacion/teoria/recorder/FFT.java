@@ -1,6 +1,8 @@
 package unal.informacion.teoria.recorder;
 
 
+import java.util.List;
+
 public class FFT {
 
     double[] real;
@@ -13,6 +15,21 @@ public class FFT {
         for (int i = 0; i < input.length; i++) {
             img[i] = 0;
             real[i] = input[i];
+        }
+    }
+
+    public FFT(List<Short> input) {
+
+
+        int size = input.size();
+        int asize = size % 2 == 0 ? size : size + 1;
+
+        this.real = new double[asize];
+        this.img = new double[asize];
+
+        for (int i = 0; i < size; i++) {
+            img[i] = 0;
+            real[i] = input.get(i) / (Short.MAX_VALUE + 0.0);
         }
     }
 
@@ -83,14 +100,14 @@ public class FFT {
 
     /**
      * Calculate magnitude of FFT
-     * @param fft: FFT
+     *
      * @return an array representing the amplitude of the associated frequency component.
      */
-    public double[] magnitude(FFT fft) {
+    public double[] magnitude() {
 
-        double[] fftMag = new double[fft.real.length];
-        for (int i = 0; i < fft.real.length; i++) {
-            fftMag[i] = Math.pow(fft.real[i], 2) + Math.pow(fft.img[i], 2);
+        double[] fftMag = new double[real.length];
+        for (int i = 0; i < real.length; i++) {
+            fftMag[i] = Math.pow(real[i], 2) + Math.pow(img[i], 2);
         }
         return fftMag;
     }
