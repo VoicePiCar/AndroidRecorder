@@ -8,9 +8,23 @@ public class FFT {
     double[] real;
     double[] img;
 
+    public int nextPowerOf2(int n)
+    {
+        n--;
+        n |= n >> 1;
+        n |= n >> 2;
+        n |= n >> 4;
+        n |= n >> 8;
+        n |= n >> 16;
+        n++;
+        return n;
+    }
+
     public FFT(double[] input) {
-        this.real = new double[input.length];
-        this.img = new double[input.length];
+
+        int size = nextPowerOf2(input.length);
+        this.real = new double[size];
+        this.img = new double[size];
 
         for (int i = 0; i < input.length; i++) {
             img[i] = 0;
@@ -20,9 +34,8 @@ public class FFT {
 
     public FFT(List<Short> input) {
 
-
         int size = input.size();
-        int asize = size % 2 == 0 ? size : size + 1;
+        int asize = nextPowerOf2(size);
 
         this.real = new double[asize];
         this.img = new double[asize];
@@ -36,17 +49,6 @@ public class FFT {
     public FFT(int size) {
         this.real = new double[size];
         this.img = new double[size];
-    }
-
-    public static FFT ditfft2(double[] input) {
-
-        if (input.length % 2 != 0) {
-            throw new IllegalArgumentException("The size of input should be divisible by 2");
-        }
-
-        FFT fft = new FFT(input);
-
-        return ditfft2(fft);
     }
 
     /**
@@ -107,7 +109,7 @@ public class FFT {
 
         double[] fftMag = new double[real.length];
         for (int i = 0; i < real.length; i++) {
-            fftMag[i] = Math.pow(real[i], 2) + Math.pow(img[i], 2);
+            fftMag[i] = Math.hypot(real[i], img[i]);
         }
         return fftMag;
     }
