@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import io.socket.client.IO;
@@ -42,6 +43,21 @@ public class MainActivity extends AppCompatActivity {
     // connection variables
     private Socket socket;
     private String serverIP;
+
+    /**
+     * Sends voice command to server to be processed
+     */
+    private void processCommand() {
+
+        if (audioBuffer.size() > 0) {
+
+            FFT fft = new FFT(audioBuffer);
+            fft.ditfft2(fft);
+            double[] results = fft.magnitude();
+            sendCommand(Arrays.toString(results));
+        }
+
+    }
 
     /**
      * Start or stop the recording
@@ -172,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
 
         audioInput.release();
         audioInput = null;
+        processCommand();
     }
 
     /**
