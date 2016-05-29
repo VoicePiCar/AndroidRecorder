@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private int sampleSize = 8000;
 
     // recorder variable instantiations
-    private AudioRecord audioInput = null;
+    private AudioRecorder audioInput;
     private AudioTrack audioOutput = null;
     private boolean recording = true;
     private boolean playing = true;
@@ -49,14 +49,6 @@ public class MainActivity extends AppCompatActivity {
      */
     private void processCommand() {
 
-        if (audioBuffer.size() > 0) {
-
-            FFT fft = new FFT(audioBuffer);
-            fft.ditfft2(fft);
-            double[] results = fft.magnitude();
-            sendCommand(Arrays.toString(results));
-        }
-
     }
 
     /**
@@ -70,13 +62,13 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void run() {
-                    startRecording();
+                    audioInput.startRecording();
                 }
             });
 
             recordThread.start();
         } else {
-            stopRecording();
+            audioBuffer = audioInput.stopRecording();
         }
     }
 
@@ -152,44 +144,6 @@ public class MainActivity extends AppCompatActivity {
         audioOutput = null;
     }
 
-    /**
-     * Start recording
-     */
-    private void startRecording() {
-
-        int channel_config = AudioFormat.CHANNEL_IN_MONO;
-        int bufferSize = AudioRecord.getMinBufferSize(sampleSize, channel_config, format);
-        audioInput = new AudioRecord(AudioSource.VOICE_RECOGNITION, sampleSize, channel_config, format, bufferSize);
-
-        if (audioInput.getState() == AudioRecord.STATE_INITIALIZED) {
-
-            audioInput.startRecording();
-            short[] audioInBuffer = new short[bufferSize];
-            audioBuffer = new ArrayList<>();
-            while (!recording && audioInput != null) {
-                int numShorts = audioInput.read(audioInBuffer, 0, bufferSize);
-
-                for (int i = 0; i < numShorts; i++) {
-                    audioBuffer.add(audioInBuffer[i]);
-                }
-            }
-        } else {
-            Log.e(LOG_TAG, "audioRecord init failed");
-        }
-    }
-
-    /**
-     * Stop recording
-     */
-    private void stopRecording() {
-        if (audioInput.getState() == AudioRecord.STATE_INITIALIZED) {
-            audioInput.stop();
-        }
-
-        audioInput.release();
-        audioInput = null;
-        processCommand();
-    }
 
     /**
      * Activate recording button
@@ -319,13 +273,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        audioInput =  new AudioRecorder(format,sampleSize);
     }
 
     @Override
     public void onPause() {
         super.onPause();
         if (audioInput != null) {
-            audioInput.release();
             audioInput = null;
         }
 

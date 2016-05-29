@@ -15,4 +15,14 @@
     <string name="disconnected">Tout d\'abord tester votre connexion</string>
     <string name="ip">192.168.1.5</string>
     <string name="invalid_ip">Numéro IP pas valide</string>
+    <string name="error_sign_in">Échec de la connexion.</string>
+    <string name="sign_in">Connexion</string>
+    <string name="title_activity_login">Connexion</string>
+    <string name="register">Registre</string>
+    <string name="recordCommands">Commandes record</string>
+    <string name="registerInstr">Remplissez le Registre.</string>
+    <string name="recordName">Enregistrer votre nom</string>
+    <string name="recordingName">S\'il vous plaît dire clairement votre nom</string>
+    <string name="finishRecording">l\'enregistrement terminé</string>
+    <string name="labelName">Nom</string>
 </resources>

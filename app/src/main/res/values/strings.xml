@@ -14,4 +14,16 @@
     <string name="disconnected">First test your connection</string>
     <string name="ip">192.168.1.5</string>
     <string name="invalid_ip">IP number not valid</string>
+    <string name="title_activity_login">Sign in</string>
+
+    <!-- Strings related to login -->
+    <string name="sign_in">Sign in</string>
+    <string name="error_sign_in">Sign in failed.</string>
+    <string name="register">Register</string>
+    <string name="recordCommands">Record commands</string>
+    <string name="registerInstr">Please fill in your name and record your name and the commands first.</string>
+    <string name="recordName">Record your name</string>
+    <string name="recordingName">Please say your name clearly.</string>
+    <string name="finishRecording">Finished recording.</string>
+    <string name="labelName">Name</string>
 </resources>
