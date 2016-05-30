@@ -28,4 +28,5 @@
     <string name="recordingStop">Stop record</string>
     <string name="recordingLeft">Left record</string>
     <string name="recordingRight">Right record</string>
+    <string name="correctRegister">Inscrivez-vous réussi, vous pouvez vous connecter maintenant.</string>
 </resources>

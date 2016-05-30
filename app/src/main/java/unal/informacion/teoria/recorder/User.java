@@ -1,6 +1,5 @@
 package unal.informacion.teoria.recorder;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class User {

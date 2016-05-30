@@ -8,8 +8,7 @@ public class FFT {
     double[] real;
     double[] img;
 
-    public int nextPowerOf2(int n)
-    {
+    public int nextPowerOf2(int n) {
         n--;
         n |= n >> 1;
         n |= n >> 2;

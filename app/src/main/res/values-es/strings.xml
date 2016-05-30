@@ -28,4 +28,5 @@
     <string name="recordingStop">Grabar Stop</string>
     <string name="recordingLeft">Grabar Left</string>
     <string name="recordingRight">Grabar Right</string>
+    <string name="correctRegister">Registro exitoso, puedes iniciar sesión ahora.</string>
 </resources>

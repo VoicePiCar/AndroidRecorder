@@ -1,75 +1,49 @@
 package unal.informacion.teoria.recorder;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
-import android.content.pm.PackageManager;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.AudioFormat;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
-
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.AsyncTask;
-
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.text.TextUtils;
-import android.view.KeyEvent;
+import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ThreadFactory;
-
-import static android.Manifest.permission.LOCATION_HARDWARE;
-import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * A login screen that offers login via voice.
  */
 public class LoginActivity extends AppCompatActivity {
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
-
     // UI references.
     private View mProgressView;
 
     // Record commands
-    private boolean recordedCommands = false;
     private boolean recordedName = false;
     private AudioRecorder audioInput;
     private User user = null;
+    private ArrayList<String> users;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        users = new ArrayList<>();
         audioInput = new AudioRecorder(AudioFormat.ENCODING_PCM_16BIT, 8000);
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if (settings.contains("users")) {
+            String jsonUsers = settings.getString("users", null);
+            Gson gson = new Gson();
+            users = gson.fromJson(jsonUsers, users.getClass());
+        }
 
         mProgressView = findViewById(R.id.login_progress);
     }
@@ -81,23 +55,40 @@ public class LoginActivity extends AppCompatActivity {
      */
     public void registerClick(View view) {
 
-        TextView lbName = (TextView) findViewById(R.id.labelName);
-        lbName.setVisibility(View.VISIBLE);
+        showRegisterForm(View.VISIBLE);
         EditText userName = (EditText) findViewById(R.id.userName);
-        userName.setVisibility(View.VISIBLE);
-        TableLayout recordButtons = (TableLayout) findViewById(R.id.commandsLayout);
-        recordButtons.setVisibility(View.VISIBLE);
-        Button mRecordNameButton = (Button) findViewById(R.id.recordName);
-        mRecordNameButton.setVisibility(View.VISIBLE);
 
         if (user == null) {
             user = new User();
         }
 
-        if (recordedCommands && recordedName && userName.getText().length() > 0) {
+        if (user.getCommands().size() == 4 && recordedName && userName.getText().length() > 0) {
             user.setName(userName.getText().toString());
+            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            SharedPreferences.Editor editor = settings.edit();
+            Gson gson = new Gson();
+            users.add(user.getName());
+            editor.putString("users", gson.toJson(users));
+            editor.putString(user.getName(), gson.toJson(user));
+            editor.commit();
+
+            Toast.makeText(getApplicationContext(), R.string.correctRegister, Toast.LENGTH_SHORT).show();
+            user = new User();
+            recordedName = false;
+            showRegisterForm(View.INVISIBLE);
         } else
             Toast.makeText(getApplicationContext(), R.string.registerInstr, Toast.LENGTH_SHORT).show();
+    }
+
+    private void showRegisterForm(int state) {
+        TextView lbName = (TextView) findViewById(R.id.labelName);
+        lbName.setVisibility(state);
+        EditText userName = (EditText) findViewById(R.id.userName);
+        userName.setVisibility(state);
+        TableLayout recordButtons = (TableLayout) findViewById(R.id.commandsLayout);
+        recordButtons.setVisibility(state);
+        Button mRecordNameButton = (Button) findViewById(R.id.recordName);
+        mRecordNameButton.setVisibility(state);
     }
 
     /**
@@ -135,8 +126,9 @@ public class LoginActivity extends AppCompatActivity {
      */
     public void recordName(View view) {
 
-        Thread recordThread = new Thread(new Runnable() {
+        recordedName = true;
 
+        Thread recordThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 audioInput.startRecording();
@@ -145,7 +137,7 @@ public class LoginActivity extends AppCompatActivity {
         recordThread.start();
 
         try {
-            Thread.sleep(2500);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -160,52 +152,56 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * Attempts to sign in
      * If there are errors, no actual login attempt is made.
+     *
+     * @param view: Android view
      */
-    private void attemptLogin() {
+    public void attemptLogin(View view) {
 
-        boolean cancel = false;
-        View focusView = null;
+        Thread recordThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                audioInput.startRecording();
+            }
+        });
+        recordThread.start();
 
-
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            showProgress(true);
-            //mAuthTask = new UserLoginTask(email, password);
-            // mAuthTask.execute((Void) null);
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-    }
 
+        FFT nameFFT = new FFT(audioInput.stopRecording());
+        nameFFT.ditfft2(nameFFT);
+        double[] nameFFTMagnitude = nameFFT.magnitude();
+        boolean logIn = false;
+        User userLog = new User();
 
-    /**
-     * Shows the progress UI and hides the login form.
-     */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    private void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        for (String user : users) {
 
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            if (settings.contains(user)) {
+                String jsonUser = settings.getString(user, null);
+                Gson gson = new Gson();
+                userLog = gson.fromJson(jsonUser, userLog.getClass());
+
+                double result = SignalProcessing.jaccardCoefficient(nameFFTMagnitude, userLog.getAudioName());
+                if (result > 0.5) {
+                    logIn = true;
+                    settings.edit().putString("user", user);
+                    break;
                 }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            }
         }
+
+        if (logIn) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        } else
+            Toast.makeText(getApplicationContext(), R.string.error_sign_in, Toast.LENGTH_SHORT).show();
+
     }
+
 }
 
 
