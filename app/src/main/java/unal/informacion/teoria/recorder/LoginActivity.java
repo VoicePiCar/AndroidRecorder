@@ -29,17 +29,21 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
 
+import static android.Manifest.permission.LOCATION_HARDWARE;
 import static android.Manifest.permission.READ_CONTACTS;
 
 /**
- * A login screen that offers login via email/password.
+ * A login screen that offers login via voice.
  */
 public class LoginActivity extends AppCompatActivity {
 
@@ -81,8 +85,8 @@ public class LoginActivity extends AppCompatActivity {
         lbName.setVisibility(View.VISIBLE);
         EditText userName = (EditText) findViewById(R.id.userName);
         userName.setVisibility(View.VISIBLE);
-        Button mRecordButton = (Button) findViewById(R.id.recordCommands);
-        mRecordButton.setVisibility(View.VISIBLE);
+        TableLayout recordButtons = (TableLayout) findViewById(R.id.commandsLayout);
+        recordButtons.setVisibility(View.VISIBLE);
         Button mRecordNameButton = (Button) findViewById(R.id.recordName);
         mRecordNameButton.setVisibility(View.VISIBLE);
 
@@ -102,13 +106,27 @@ public class LoginActivity extends AppCompatActivity {
      * @param view: Android view
      */
     public void recordCommands(View view) {
+        String cmd = view.getTag().toString();
+        Thread recordThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                audioInput.startRecording();
+            }
+        });
+        recordThread.start();
 
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-        if (recordedCommands) {
-
-        } else
-            Toast.makeText(getApplicationContext(), "Error: not existing button", Toast.LENGTH_SHORT).show();
+        FFT cmdFFT = new FFT(audioInput.stopRecording());
+        cmdFFT.ditfft2(cmdFFT);
+        user.setCommand(cmd, cmdFFT.magnitude());
+        Toast.makeText(getApplicationContext(), R.string.finishRecording, Toast.LENGTH_SHORT).show();
     }
+
 
     /**
      * Record name to register user
@@ -125,7 +143,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
         recordThread.start();
-        Toast.makeText(getApplicationContext(), R.string.recordingName, Toast.LENGTH_SHORT).show();
 
         try {
             Thread.sleep(2500);
@@ -136,7 +153,7 @@ public class LoginActivity extends AppCompatActivity {
         FFT nameFFT = new FFT(audioInput.stopRecording());
         nameFFT.ditfft2(nameFFT);
         user.setAudioName(nameFFT.magnitude());
-        //Toast.makeText(getApplicationContext(), R.string.finishRecording, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), R.string.finishRecording, Toast.LENGTH_SHORT).show();
     }
 
 
@@ -159,7 +176,7 @@ public class LoginActivity extends AppCompatActivity {
             // perform the user login attempt.
             showProgress(true);
             //mAuthTask = new UserLoginTask(email, password);
-           // mAuthTask.execute((Void) null);
+            // mAuthTask.execute((Void) null);
         }
     }
 

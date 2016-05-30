@@ -1,14 +1,16 @@
 package unal.informacion.teoria.recorder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class User {
     private String name;
     private double[] audioName;
-    private double[] audioGo;
-    private double[] audioStop;
-    private double[] audioLeft;
-    private double[] audioRight;
+    private HashMap<String, double[] > commands;
+
+    public User() {
+        commands = new HashMap<>();
+    }
 
     public double[] getAudioName() {
         return audioName;
@@ -18,36 +20,16 @@ public class User {
         this.audioName = audioName;
     }
 
-    public double[] getAudioGo() {
-        return audioGo;
+    public HashMap<String, double[]> getCommands() {
+        return commands;
     }
 
-    public void setAudioGo(double[] audioGo) {
-        this.audioGo = audioGo;
+    public double[] getCommand(String cmd) {
+        return commands.get(cmd);
     }
 
-    public double[] getAudioStop() {
-        return audioStop;
-    }
-
-    public void setAudioStop(double[] audioStop) {
-        this.audioStop = audioStop;
-    }
-
-    public double[] getAudioLeft() {
-        return audioLeft;
-    }
-
-    public void setAudioLeft(double[] audioLeft) {
-        this.audioLeft = audioLeft;
-    }
-
-    public double[] getAudioRight() {
-        return audioRight;
-    }
-
-    public void setAudioRight(double[] audioRight) {
-        this.audioRight = audioRight;
+    public void setCommand(String key, double[] commands) {
+        this.commands.put(key, commands);
     }
 
     public String getName() {

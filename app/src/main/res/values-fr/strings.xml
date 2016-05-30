@@ -19,10 +19,13 @@
     <string name="sign_in">Connexion</string>
     <string name="title_activity_login">Connexion</string>
     <string name="register">Registre</string>
-    <string name="recordCommands">Commandes record</string>
     <string name="registerInstr">Remplissez le Registre.</string>
     <string name="recordName">Enregistrer votre nom</string>
     <string name="recordingName">S\'il vous plaît dire clairement votre nom</string>
     <string name="finishRecording">l\'enregistrement terminé</string>
     <string name="labelName">Nom</string>
+    <string name="recordingGo">Go record</string>
+    <string name="recordingStop">Stop record</string>
+    <string name="recordingLeft">Left record</string>
+    <string name="recordingRight">Right record</string>
 </resources>

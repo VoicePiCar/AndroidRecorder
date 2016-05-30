@@ -64,16 +64,6 @@
         android:visibility="invisible" />
 
     <Button
-        style="?android:textAppearanceSmall"
-        android:id="@+id/recordCommands"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/recordCommands"
-        android:textStyle="bold"
-        android:visibility="invisible" />
-
-    <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/recordName"
@@ -82,6 +72,80 @@
         android:nestedScrollingEnabled="false"
         android:onClick="recordName"
         android:textStyle="bold"
-        style="?android:textAppearanceSmall" />
+        style="?android:textAppearanceSmall"
+        android:layout_marginTop="16dp" />
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.53"
+        android:id="@+id/commandsLayout"
+        android:visibility="invisible">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                style="?android:textAppearanceSmall"
+                android:id="@+id/recordGo"
+                android:layout_marginTop="16dp"
+                android:textStyle="bold"
+                android:visibility="visible"
+                android:onClick="recordCommands"
+                android:layout_column="8"
+                android:tag="go"
+                android:text="@string/recordingGo"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <Button
+                style="?android:textAppearanceSmall"
+                android:id="@+id/recordStop"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/recordingStop"
+                android:textStyle="bold"
+                android:visibility="visible"
+                android:onClick="recordCommands"
+                android:layout_column="9"
+                android:layout_weight="1"
+                android:tag="stop" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                style="?android:textAppearanceSmall"
+                android:id="@+id/recordLeft"
+                android:layout_marginTop="16dp"
+                android:text="@string/recordingLeft"
+                android:textStyle="bold"
+                android:visibility="visible"
+                android:onClick="recordCommands"
+                android:layout_column="8"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:tag="left" />
+
+            <Button
+                style="?android:textAppearanceSmall"
+                android:id="@+id/recordRight"
+                android:layout_marginTop="16dp"
+                android:text="@string/recordingRight"
+                android:textStyle="bold"
+                android:visibility="visible"
+                android:onClick="recordCommands"
+                android:layout_column="9"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:tag="right" />
+        </TableRow>
+    </TableLayout>
 
 </LinearLayout>
