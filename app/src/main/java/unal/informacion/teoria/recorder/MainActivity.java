@@ -239,7 +239,6 @@ public class MainActivity extends AppCompatActivity {
      * @param view: Android view
      */
     public void testConnection(View view) {
-
         EditText input = (EditText) findViewById(R.id.inputRobotIP);
         assert input != null;
         if (Patterns.IP_ADDRESS.matcher(input.getText()).matches()) {
@@ -277,6 +276,46 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Send go command
+     *
+     * @param view: ignored param
+     */
+    public void goCommand(View view) {
+        sendCommand("go");
+        Toast.makeText(getApplicationContext(), R.string.go, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Send left command
+     *
+     * @param view: ignored param
+     */
+    public void leftCommand(View view) {
+        sendCommand("left");
+        Toast.makeText(getApplicationContext(), R.string.left, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Send right command
+     *
+     * @param view: ignored param
+     */
+    public void rightCommand(View view) {
+        sendCommand("right");
+        Toast.makeText(getApplicationContext(), R.string.right, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Send stop command
+     *
+     * @param view: ignored param
+     */
+    public void stopCommand(View view) {
+        sendCommand("stop");
+        Toast.makeText(getApplicationContext(), R.string.stop, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
      * Start a new SocketIO connection
      */
     public void newConnection() {
@@ -302,11 +341,12 @@ public class MainActivity extends AppCompatActivity {
         }).on(Socket.EVENT_CONNECT_ERROR, new Emitter.Listener() {
 
             @Override
-            public void call(Object... args) {
+            public void call(final Object... args) {
                 socket.disconnect();
                 MainActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        Log.e(LOG_TAG, "Socket error: " + args[0].toString());
                         Toast.makeText(getApplicationContext(), R.string.connectionError,
                                 Toast.LENGTH_SHORT).show();
                     }
