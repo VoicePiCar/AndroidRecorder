@@ -30,4 +30,5 @@
     <string name="recordingRight">Right record</string>
     <string name="correctRegister">Inscrivez-vous réussi, vous pouvez vous connecter maintenant.</string>
     <string name="commandNotFound">Commande non trouvée. Réessayer</string>
+    <string name="logo">Logo</string>
 </resources>

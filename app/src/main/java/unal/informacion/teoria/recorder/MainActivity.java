@@ -79,10 +79,8 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Start or stop the recording
-     *
-     * @param start: true if will record, false otherwise
      */
-    private void onRecord(boolean start) {
+    private void onRecord() {
 
         Thread recordThread = new Thread(new Runnable() {
 
@@ -184,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public void recordClick(View view) {
         if (playing) {
-            onRecord(recording);
+            onRecord();
         } else
             Toast.makeText(getApplicationContext(), R.string.wait_play, Toast.LENGTH_SHORT).show();
     }

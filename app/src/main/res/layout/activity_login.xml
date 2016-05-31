@@ -26,7 +26,8 @@
         android:id="@+id/imageView"
         android:layout_gravity="center_horizontal"
         android:src="@mipmap/ic_launcher"
-        android:layout_weight="0.30" />
+        android:layout_weight="0.30"
+        android:contentDescription="@string/logo" />
 
     <Button
         style="?android:textAppearanceSmall"
@@ -63,7 +64,8 @@
         android:layout_height="wrap_content"
         android:id="@+id/userName"
         android:layout_gravity="center_horizontal"
-        android:visibility="invisible" />
+        android:visibility="invisible"
+        android:inputType="textPersonName" />
 
     <Button
         android:layout_width="match_parent"

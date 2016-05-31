@@ -31,4 +31,5 @@
     <string name="recordingRight">Record Right</string>
     <string name="correctRegister">Register successful, you can log in now.</string>
     <string name="commandNotFound">Command not found. Try again</string>
+    <string name="logo">Logo</string>
 </resources>

@@ -58,6 +58,7 @@ public class LoginActivity extends AppCompatActivity {
             user = new User();
         }
 
+        assert userName != null;
         if (user.getCommands().size() == 4 && recordedName && userName.getText().length() > 0) {
             user.setName(userName.getText().toString());
             SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -67,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
             editor.putString("users", gson.toJson(users));
             editor.putString(user.getName(), gson.toJson(user.getAudioName()));
             editor.putString(user.getName() + "cmd", gson.toJson(user));
-            editor.commit();
+            editor.apply();
 
             Toast.makeText(getApplicationContext(), R.string.correctRegister, Toast.LENGTH_SHORT).show();
             user = new User();
@@ -79,12 +80,16 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showRegisterForm(int state) {
         TextView lbName = (TextView) findViewById(R.id.labelName);
+        assert lbName != null;
         lbName.setVisibility(state);
         EditText userName = (EditText) findViewById(R.id.userName);
+        assert userName != null;
         userName.setVisibility(state);
         TableLayout recordButtons = (TableLayout) findViewById(R.id.commandsLayout);
+        assert recordButtons != null;
         recordButtons.setVisibility(state);
         Button mRecordNameButton = (Button) findViewById(R.id.recordName);
+        assert mRecordNameButton != null;
         mRecordNameButton.setVisibility(state);
     }
 
@@ -185,7 +190,7 @@ public class LoginActivity extends AppCompatActivity {
                 double result = SignalProcessing.jaccardCoefficient(nameFFTMagnitude, audioUser);
                 if (result > 0.5) {
                     logIn = true;
-                    settings.edit().putString("user", user).commit();
+                    settings.edit().putString("user", user).apply();
                     break;
                 }
             }
