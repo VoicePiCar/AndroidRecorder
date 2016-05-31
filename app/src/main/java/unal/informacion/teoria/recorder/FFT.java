@@ -8,8 +8,7 @@ public class FFT {
     double[] real;
     double[] img;
 
-    public int nextPowerOf2(int n)
-    {
+    public int nextPowerOf2(int n) {
         n--;
         n |= n >> 1;
         n |= n >> 2;
@@ -41,9 +40,9 @@ public class FFT {
         this.img = new double[asize];
 
         for (int i = 0; i < size; i++) {
-            img[i] = 0;
             real[i] = input.get(i) / (Short.MAX_VALUE + 0.0);
         }
+
     }
 
     public FFT(int size) {

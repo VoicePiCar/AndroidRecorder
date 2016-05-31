@@ -15,4 +15,20 @@
     <string name="disconnected">Prueba primero la conexión</string>
     <string name="ip">192.168.1.5</string>
     <string name="invalid_ip">Número de IP invalido</string>
+    <string name="title_activity_login">Inicio de sesión</string>
+    <string name="sign_in">Inicio de sesión</string>
+    <string name="error_sign_in">El inicio de sesión fallo.</string>
+    <string name="register">Registro</string>
+    <string name="registerInstr">Completa el registro.</string>
+    <string name="recordName">Graba tu nombre</string>
+    <string name="recordingName">Di tu nombre.</string>
+    <string name="finishRecording">Termino la grabación</string>
+    <string name="labelName">Nombre</string>
+    <string name="recordingGo">Grabar Go</string>
+    <string name="recordingStop">Grabar Stop</string>
+    <string name="recordingLeft">Grabar Left</string>
+    <string name="recordingRight">Grabar Right</string>
+    <string name="correctRegister">Registro exitoso, puedes iniciar sesión ahora.</string>
+    <string name="commandNotFound">Comando no encontrado, intente de nuevo</string>
+    <string name="logo">Logo</string>
 </resources>

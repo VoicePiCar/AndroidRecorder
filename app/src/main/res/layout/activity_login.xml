@@ -1,0 +1,155 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="unal.informacion.teoria.recorder.LoginActivity"
+    android:weightSum="1">
+
+    <!-- Login progress -->
+    <ProgressBar
+        android:id="@+id/login_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
+    <ImageView
+        android:layout_width="199dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:layout_gravity="center_horizontal"
+        android:src="@mipmap/ic_launcher"
+        android:layout_weight="0.30"
+        android:contentDescription="@string/logo" />
+
+    <Button
+        style="?android:textAppearanceSmall"
+        android:id="@+id/signIn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/sign_in"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:allowUndo="false"
+        android:onClick="attemptLogin" />
+
+    <Button
+        style="?android:textAppearanceSmall"
+        android:id="@+id/register"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/register"
+        android:textStyle="bold"
+        android:onClick="registerClick" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/labelName"
+        android:id="@+id/labelName"
+        android:visibility="invisible" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/userName"
+        android:layout_gravity="center_horizontal"
+        android:visibility="invisible"
+        android:inputType="textPersonName" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/recordName"
+        android:id="@+id/recordName"
+        android:visibility="invisible"
+        android:nestedScrollingEnabled="false"
+        android:onClick="recordName"
+        android:textStyle="bold"
+        style="?android:textAppearanceSmall"
+        android:layout_marginTop="16dp" />
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.53"
+        android:id="@+id/commandsLayout"
+        android:visibility="invisible">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                style="?android:textAppearanceSmall"
+                android:id="@+id/recordGo"
+                android:layout_marginTop="16dp"
+                android:textStyle="bold"
+                android:visibility="visible"
+                android:onClick="recordCommands"
+                android:layout_column="8"
+                android:tag="go"
+                android:text="@string/recordingGo"
+                android:layout_width="0dp"
+                android:layout_weight="1" />
+
+            <Button
+                style="?android:textAppearanceSmall"
+                android:id="@+id/recordStop"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/recordingStop"
+                android:textStyle="bold"
+                android:visibility="visible"
+                android:onClick="recordCommands"
+                android:layout_column="9"
+                android:layout_weight="1"
+                android:tag="stop" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                style="?android:textAppearanceSmall"
+                android:id="@+id/recordLeft"
+                android:layout_marginTop="16dp"
+                android:text="@string/recordingLeft"
+                android:textStyle="bold"
+                android:visibility="visible"
+                android:onClick="recordCommands"
+                android:layout_column="8"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:tag="left" />
+
+            <Button
+                style="?android:textAppearanceSmall"
+                android:id="@+id/recordRight"
+                android:layout_marginTop="16dp"
+                android:text="@string/recordingRight"
+                android:textStyle="bold"
+                android:visibility="visible"
+                android:onClick="recordCommands"
+                android:layout_column="9"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:tag="right" />
+        </TableRow>
+    </TableLayout>
+
+</LinearLayout>
