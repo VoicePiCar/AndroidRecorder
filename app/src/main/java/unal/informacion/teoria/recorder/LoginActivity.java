@@ -22,9 +22,6 @@ import java.util.ArrayList;
  */
 public class LoginActivity extends AppCompatActivity {
 
-    // UI references.
-    private View mProgressView;
-
     // Record commands
     private boolean recordedName = false;
     private AudioRecorder audioInput;
@@ -45,7 +42,6 @@ public class LoginActivity extends AppCompatActivity {
             users = gson.fromJson(jsonUsers, users.getClass());
         }
 
-        mProgressView = findViewById(R.id.login_progress);
     }
 
     /**
@@ -69,7 +65,8 @@ public class LoginActivity extends AppCompatActivity {
             Gson gson = new Gson();
             users.add(user.getName());
             editor.putString("users", gson.toJson(users));
-            editor.putString(user.getName(), gson.toJson(user));
+            editor.putString(user.getName(), gson.toJson(user.getAudioName()));
+            editor.putString(user.getName() + "cmd", gson.toJson(user));
             editor.commit();
 
             Toast.makeText(getApplicationContext(), R.string.correctRegister, Toast.LENGTH_SHORT).show();
@@ -113,7 +110,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         FFT cmdFFT = new FFT(audioInput.stopRecording());
-        cmdFFT.ditfft2(cmdFFT);
+        cmdFFT = FFT.ditfft2(cmdFFT);
         user.setCommand(cmd, cmdFFT.magnitude());
         Toast.makeText(getApplicationContext(), R.string.finishRecording, Toast.LENGTH_SHORT).show();
     }
@@ -143,7 +140,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         FFT nameFFT = new FFT(audioInput.stopRecording());
-        nameFFT.ditfft2(nameFFT);
+        nameFFT = FFT.ditfft2(nameFFT);
         user.setAudioName(nameFFT.magnitude());
         Toast.makeText(getApplicationContext(), R.string.finishRecording, Toast.LENGTH_SHORT).show();
     }
@@ -172,10 +169,9 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         FFT nameFFT = new FFT(audioInput.stopRecording());
-        nameFFT.ditfft2(nameFFT);
+        nameFFT = FFT.ditfft2(nameFFT);
         double[] nameFFTMagnitude = nameFFT.magnitude();
         boolean logIn = false;
-        User userLog = new User();
 
         for (String user : users) {
 
@@ -183,12 +179,13 @@ public class LoginActivity extends AppCompatActivity {
             if (settings.contains(user)) {
                 String jsonUser = settings.getString(user, null);
                 Gson gson = new Gson();
-                userLog = gson.fromJson(jsonUser, userLog.getClass());
+                double[] audioUser = new double[20];
+                audioUser = gson.fromJson(jsonUser, audioUser.getClass());
 
-                double result = SignalProcessing.jaccardCoefficient(nameFFTMagnitude, userLog.getAudioName());
+                double result = SignalProcessing.jaccardCoefficient(nameFFTMagnitude, audioUser);
                 if (result > 0.5) {
                     logIn = true;
-                    settings.edit().putString("user", user);
+                    settings.edit().putString("user", user).commit();
                     break;
                 }
             }

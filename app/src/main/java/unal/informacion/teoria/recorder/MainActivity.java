@@ -1,11 +1,11 @@
 package unal.informacion.teoria.recorder;
 
+import android.content.SharedPreferences;
 import android.media.AudioFormat;
 import android.media.AudioManager;
-import android.media.AudioRecord;
 import android.media.AudioTrack;
-import android.media.MediaRecorder.AudioSource;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Patterns;
@@ -14,9 +14,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import io.socket.client.IO;
@@ -44,10 +44,36 @@ public class MainActivity extends AppCompatActivity {
     private Socket socket;
     private String serverIP;
 
+    // User
+    private User user;
+
     /**
-     * Sends voice command to server to be processed
+     * Process voice and sends command to server
      */
     private void processCommand() {
+
+        FFT commandFFT = new FFT(audioBuffer);
+        commandFFT = FFT.ditfft2(commandFFT);
+        double[] magnitude = commandFFT.magnitude();
+        String command = "";
+
+        for (String key : user.getCommands().keySet()) {
+
+            double result = SignalProcessing.jaccardCoefficient(magnitude,
+                    user.getCommand(key));
+
+            if (result > 0.5) {
+                command = key;
+                break;
+            }
+        }
+
+        if (!command.isEmpty()) {
+            sendCommand(command);
+            Toast.makeText(getApplicationContext(), command, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getApplicationContext(), R.string.commandNotFound, Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -57,19 +83,24 @@ public class MainActivity extends AppCompatActivity {
      * @param start: true if will record, false otherwise
      */
     private void onRecord(boolean start) {
-        if (start) {
-            Thread recordThread = new Thread(new Runnable() {
 
-                @Override
-                public void run() {
-                    audioInput.startRecording();
-                }
-            });
+        Thread recordThread = new Thread(new Runnable() {
 
-            recordThread.start();
-        } else {
-            audioBuffer = audioInput.stopRecording();
+            @Override
+            public void run() {
+                audioInput.startRecording();
+            }
+        });
+        recordThread.start();
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+
+        audioBuffer = audioInput.stopRecording();
+        processCommand();
     }
 
     /**
@@ -117,7 +148,8 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onPeriodicNotification(AudioTrack track) {}
+                    public void onPeriodicNotification(AudioTrack track) {
+                    }
                 });
                 audioOutput.play();
 
@@ -153,15 +185,6 @@ public class MainActivity extends AppCompatActivity {
     public void recordClick(View view) {
         if (playing) {
             onRecord(recording);
-            Button button = (Button) findViewById(R.id.rec);
-            if (button != null) {
-                if (recording)
-                    button.setText(R.string.stop_rec);
-                else
-                    button.setText(R.string.start_rec);
-                recording = !recording;
-            } else
-                Toast.makeText(getApplicationContext(), "Error: not existing button", Toast.LENGTH_SHORT).show();
         } else
             Toast.makeText(getApplicationContext(), R.string.wait_play, Toast.LENGTH_SHORT).show();
     }
@@ -273,7 +296,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        audioInput =  new AudioRecorder(format,sampleSize);
+        audioInput = new AudioRecorder(format, sampleSize);
+        user = new User();
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        if (settings.contains("user")) {
+            String nameUser = settings.getString("user", null);
+            String jsonUser = settings.getString(nameUser + "cmd", null);
+
+            Gson gson = new Gson();
+            user = (gson.fromJson(jsonUser, user.getClass()));
+        }
     }
 
     @Override

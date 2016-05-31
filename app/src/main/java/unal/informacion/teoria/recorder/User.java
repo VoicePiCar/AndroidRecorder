@@ -9,6 +9,7 @@ public class User {
 
     public User() {
         commands = new HashMap<>();
+        audioName = new double[20];
     }
 
     public double[] getAudioName() {
@@ -25,6 +26,10 @@ public class User {
 
     public double[] getCommand(String cmd) {
         return commands.get(cmd);
+    }
+
+    public void setCommands(HashMap<String, double[]> commands) {
+        this.commands = commands;
     }
 
     public void setCommand(String key, double[] commands) {

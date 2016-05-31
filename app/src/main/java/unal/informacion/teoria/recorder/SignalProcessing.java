@@ -45,17 +45,34 @@ public class SignalProcessing {
 		return minSum / maxSum;
 	}
 
-    public static double[] normalize(double[] x) {
+
+    public static double[] normalize(List<Short> x) {
 
         double max = 0;
-        for(double d: x){
+        double[] norm = new double[x.size()];
+        for (Short d : x) {
             max = Math.max(max, d);
         }
 
-        for(int i = 0; i < x.length; i++){
-            x[i] /= max;
+        for (int i = 0; i < x.size(); i++) {
+            norm[i] = x.get(i) / max;
         }
 
-        return x;
+        return norm;
+    }
+
+    public static double[] normalize(double[] x) {
+
+        double max = 0;
+        double[] norm = new double[x.length];
+        for (double d : x) {
+            max = Math.max(max, d);
+        }
+
+        for (int i = 0; i < x.length; i++) {
+            norm[i] = x[i] / max;
+        }
+
+        return norm;
     }
 }

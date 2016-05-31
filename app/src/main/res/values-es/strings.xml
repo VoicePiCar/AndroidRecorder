@@ -29,4 +29,5 @@
     <string name="recordingLeft">Grabar Left</string>
     <string name="recordingRight">Grabar Right</string>
     <string name="correctRegister">Registro exitoso, puedes iniciar sesión ahora.</string>
+    <string name="commandNotFound">Comando no encontrado, intente de nuevo</string>
 </resources>
