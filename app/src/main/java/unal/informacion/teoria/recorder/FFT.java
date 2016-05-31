@@ -39,7 +39,10 @@ public class FFT {
         this.real = new double[asize];
         this.img = new double[asize];
 
-        real = SignalProcessing.normalize(input);
+        for (int i = 0; i < size; i++) {
+            real[i] = input.get(i) / (Short.MAX_VALUE + 0.0);
+        }
+
     }
 
     public FFT(int size) {
