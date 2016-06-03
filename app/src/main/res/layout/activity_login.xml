@@ -57,6 +57,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/labelName"
         android:id="@+id/labelName"
+        android:labelFor="@id/userName"
         android:visibility="invisible" />
 
     <EditText
