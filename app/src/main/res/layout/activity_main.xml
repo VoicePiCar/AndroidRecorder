@@ -86,4 +86,50 @@
         android:layout_below="@+id/linearLayout"
         android:layout_centerHorizontal="true" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/testConnection"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="40dp">
+
+        <Button
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:id="@+id/go"
+            android:text="@string/go"
+            android:onClick="goCommand"
+            style="?android:attr/buttonBarButtonStyle"/>
+
+        <Button
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:id="@+id/left"
+            android:text="@string/left"
+            android:onClick="leftCommand"
+            style="?android:attr/buttonBarButtonStyle"/>
+
+        <Button
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:id="@+id/right"
+            android:text="@string/right"
+            android:onClick="rightCommand"
+            style="?android:attr/buttonBarButtonStyle"/>
+
+        <Button
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:id="@+id/stop"
+            android:text="@string/stop"
+            android:onClick="stopCommand"
+            style="?android:attr/buttonBarButtonStyle"/>
+
+    </LinearLayout>
+
 </RelativeLayout>

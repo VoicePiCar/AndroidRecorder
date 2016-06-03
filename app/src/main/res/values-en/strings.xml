@@ -31,4 +31,8 @@
     <string name="correctRegister">Register successful, you can log in now.</string>
     <string name="commandNotFound">Command not found. Try again</string>
     <string name="logo">Logo</string>
+    <string name="go">Go</string>
+    <string name="left">Left</string>
+    <string name="right">Right</string>
+    <string name="stop">Stop</string>
 </resources>
