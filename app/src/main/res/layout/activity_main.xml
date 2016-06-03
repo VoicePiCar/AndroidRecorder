@@ -56,8 +56,7 @@
         android:id="@+id/linearLayout"
         android:layout_below="@+id/textView"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="59dp"
-        android:layout_alignParentRight="true">
+        android:layout_marginTop="59dp">
 
         <TextView
             android:layout_width="0dp"

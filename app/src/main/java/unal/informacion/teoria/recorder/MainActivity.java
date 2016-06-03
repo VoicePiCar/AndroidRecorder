@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Set;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -34,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
     // recorder variable instantiations
     private AudioRecorder audioInput;
     private AudioTrack audioOutput = null;
-    private boolean recording = true;
     private boolean playing = true;
 
     // Audio buffer
@@ -57,24 +57,17 @@ public class MainActivity extends AppCompatActivity {
         double[] magnitude = commandFFT.magnitude();
         String command = "";
 
+        double max = -1;
         for (String key : user.getCommands().keySet()) {
-
-            double result = SignalProcessing.jaccardCoefficient(magnitude,
-                    user.getCommand(key));
-
-            if (result > 0.5) {
+            double result = SignalProcessing.jaccardCoefficient(magnitude, user.getCommand(key));
+            if (result > max) {
                 command = key;
-                break;
+                max = result;
             }
         }
 
-        if (!command.isEmpty()) {
-            sendCommand(command);
-            Toast.makeText(getApplicationContext(), command, Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(getApplicationContext(), R.string.commandNotFound, Toast.LENGTH_SHORT).show();
-        }
-
+        sendCommand(command);
+        Toast.makeText(getApplicationContext(), command, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -193,19 +186,16 @@ public class MainActivity extends AppCompatActivity {
      * @param view: Android view
      */
     public void playClick(View view) {
-        if (recording) {
-            onPlay(playing);
-            Button button = (Button) findViewById(R.id.player);
-            if (button != null) {
-                if (playing)
-                    button.setText(R.string.stop_play);
-                else
-                    button.setText(R.string.start_play);
-                playing = !playing;
-            } else
-                Toast.makeText(getApplicationContext(), "Error: not existing button", Toast.LENGTH_SHORT).show();
+        onPlay(playing);
+        Button button = (Button) findViewById(R.id.player);
+        if (button != null) {
+            if (playing)
+                button.setText(R.string.stop_play);
+            else
+                button.setText(R.string.start_play);
+            playing = !playing;
         } else
-            Toast.makeText(getApplicationContext(), R.string.wait_rec, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Error: not existing button", Toast.LENGTH_SHORT).show();
     }
 
     /**

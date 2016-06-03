@@ -13,7 +13,7 @@
     <string name="connectionError">Lo sentimos, no fue posible establecer la conexión con el robot</string>
     <string name="connected">Conexión exitosa</string>
     <string name="disconnected">Prueba primero la conexión</string>
-    <string name="ip">192.168.1.5</string>
+    <string name="ip">192.168.43.21</string>
     <string name="invalid_ip">Número de IP invalido</string>
     <string name="title_activity_login">Inicio de sesión</string>
     <string name="sign_in">Inicio de sesión</string>

@@ -178,6 +178,9 @@ public class LoginActivity extends AppCompatActivity {
         double[] nameFFTMagnitude = nameFFT.magnitude();
         boolean logIn = false;
 
+        double max = -1;
+        String similarUser = "";
+
         for (String user : users) {
 
             SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -188,13 +191,15 @@ public class LoginActivity extends AppCompatActivity {
                 audioUser = gson.fromJson(jsonUser, audioUser.getClass());
 
                 double result = SignalProcessing.jaccardCoefficient(nameFFTMagnitude, audioUser);
-                if (result > 0.5) {
+                if (result > max) {
                     logIn = true;
-                    settings.edit().putString("user", user).apply();
-                    break;
+                    max = result;
+                    similarUser = user;
                 }
             }
         }
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        settings.edit().putString("user", similarUser).apply();
 
         if (logIn) {
             Intent intent = new Intent(this, MainActivity.class);
